@@ -1,0 +1,84 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+  button(onclick='getAllUsers()' ) Get All Users
+  button(onclick='createUser()' ) Create User
+  button(onclick='updateUser()' ) Update User
+  button(onclick='deleteUser()' ) Del User
+  br
+  button(onclick='register()' ) Register
+  button(onclick='loginAdmin()' ) Login Admin
+  button(onclick='loginUser()' ) Login User
+  br
+  div#display
+  script.
+    let token = ''; 
+    function register(){
+      const body = JSON.stringify({login:'example2@domain.fr', password:'azerty'})
+      const headers = {'Content-Type':'application/json'}
+      fetch('register',{method:'POST', body, headers}).then((resp)=>resp.text()).then(
+        (text) => {
+          document.getElementById('display').innerText = text;
+        }
+      )
+    }
+    function loginAdmin(){
+      const body = JSON.stringify({login:'admin@admin.fr', password:'azerty'})
+      const headers = {'Content-Type':'application/json'}
+      fetch('login',{method:'POST', body, headers}).then((resp)=>resp.text()).then(
+        (text) => {
+          document.getElementById('display').innerText = text;
+          token = JSON.parse(text).token
+        }
+      )
+    }
+    function loginUser(){
+      const body = JSON.stringify({login:'user@user.fr', password:'user'})
+      const headers = {'Content-Type':'application/json'}
+      fetch('login',{method:'POST', body, headers}).then((resp)=>resp.text()).then(
+        (text) => {
+          document.getElementById('display').innerText = text;
+          token = JSON.parse(text).token
+        }
+      )
+    }
+    function getAllUsers(){
+      const headers = {'authorization':token}
+      fetch('users',{headers}).then((resp)=>resp.text()).then(
+        (text) => {
+          document.getElementById('display').innerText = text;
+        }
+      )
+    }
+    function createUser(){
+      const body = JSON.stringify({login:'login@login.fr', password:'azerty'})
+      const headers = {'Content-Type':'application/json',
+      'authorization':token}
+      fetch('users/create',{method:'POST', body, headers}).then((resp)=>resp.text()).then(
+        (text) => {
+          document.getElementById('display').innerText = text;
+        }
+      )
+    }
+    function updateUser(){
+      const body = JSON.stringify({password:'azerty'})
+      const headers = {'Content-Type':'application/json',
+      'authorization':token}
+      fetch('users/update/215',{method:'POST', body, headers}).then((resp)=>resp.text()).then(
+        (text) => {
+          document.getElementById('display').innerText = text;
+        }
+      )
+    }
+    function deleteUser(){
+      //const body = JSON.stringify({password:'azerty'})
+      const headers = {'Content-Type':'application/json',
+      'authorization':token}
+      fetch('users/delete/1',{method:'POST', headers}).then((resp)=>resp.text()).then(
+        (text) => {
+          document.getElementById('display').innerText = text;
+        }
+      )
+    }
